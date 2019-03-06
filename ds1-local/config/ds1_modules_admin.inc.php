@@ -84,4 +84,20 @@
     // ************************************************************************************
 
 
+    // ************************************************************************************
+    // **************   Modul sluzby        ***********************************************
+
+    // novy modul
+    $module = array();
+    $module["name"] = "naplanovane_sluzby";
+    $module["title"] = "Naplánované služby";
+    $module["route_name"] = "naplanovane_sluzby";
+    $module["route_path"] = "/plugin/$module[name]";
+    $module["route"] = array("controller_name" => "naplanovane_sluzby_controller", "controller_action" => "indexAction");
+
+    // pridat modul
+    $modules_admin[] = $module;
+
+    // **************   KONEC Modul sluzby         ****************************************
+// ***********************************************************************************
     return $modules_admin;
