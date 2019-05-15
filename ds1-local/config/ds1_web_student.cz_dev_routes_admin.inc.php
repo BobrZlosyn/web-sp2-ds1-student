@@ -86,6 +86,14 @@
         ));
     // KONEC API
 
+    // naplanovane sluzby API
+    $routes->add("ns_api",               // nejde pres konstantu, jeste tady neni z admin modulu
+        new Route("/plugin/ns-api",
+            array(
+                '_controller' => 'ds1\admin_modules\naplanovane_sluzby\naplanovane_sluzby_api_controller::apiAction'
+            )
+        ));
+    // KONEC API
 
     // 404 - stranka nenalezena TODO + pridat do .htaccess /404
 

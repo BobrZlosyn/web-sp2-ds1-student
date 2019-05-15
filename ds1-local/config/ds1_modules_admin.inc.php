@@ -89,11 +89,11 @@
 
     // novy modul
     $module = array();
-    $module["name"] = "naplanovane_sluzby";
+    $module["name"] = "scheduler";
     $module["title"] = "Naplánované služby";
-    $module["route_name"] = "naplanovane_sluzby";
+    $module["route_name"] = "scheduler";
     $module["route_path"] = "/plugin/$module[name]";
-    $module["route"] = array("controller_name" => "naplanovane_sluzby_controller", "controller_action" => "indexAction");
+    $module["route"] = array("controller_name" => "scheduler_controller", "controller_action" => "indexAction");
 
     // pridat modul
     $modules_admin[] = $module;
