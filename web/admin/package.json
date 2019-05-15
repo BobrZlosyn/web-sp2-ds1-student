@@ -13,6 +13,9 @@
     "@coreui/coreui-plugin-chartjs-custom-tooltips": "^1.2.0",
     "@fullcalendar/core": "^4.1.0",
     "@fullcalendar/daygrid": "^4.1.0",
+    "@fullcalendar/interaction": "^4.1.0",
+    "@fullcalendar/list": "^4.1.0",
+    "@fullcalendar/timegrid": "^4.1.0",
     "angucomplete-alt": "^2.5.0",
     "angular": "^1.7.5",
     "bootstrap": "4.1.0",
@@ -28,5 +31,13 @@
     "popper.js": "1.14.3",
     "simple-line-icons": "2.4.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.2.1"
+  },
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "clean": "rm -rf dist"
+  }
 }

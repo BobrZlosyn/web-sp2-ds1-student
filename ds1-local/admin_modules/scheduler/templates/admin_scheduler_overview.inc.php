@@ -1,4 +1,5 @@
 <div class="container-fluid" ng-app="ds1">
+
     <div class="card">
         <div class="card-header">
             <div class="pull-left">
@@ -12,11 +13,13 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <!-- search form-->
-                    bodyyyyyy
+                    <div id='calendar'></div>
                 </div>
             </div>
 
         </div>
     </div>
 </div>
+
+
+<script src='/admin/dist/scheduler.js'></script>
