@@ -14457,7 +14457,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
 
     var calendar = new _fullcalendar_core__WEBPACK_IMPORTED_MODULE_0__["Calendar"](calendarEl, {
-        plugins: [ _fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_1___default.a, _fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_2___default.a, _fullcalendar_timegrid__WEBPACK_IMPORTED_MODULE_3___default.a, _fullcalendar_list__WEBPACK_IMPORTED_MODULE_4___default.a ],
+        plugins: [ _fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_2___default.a, _fullcalendar_timegrid__WEBPACK_IMPORTED_MODULE_3___default.a, _fullcalendar_list__WEBPACK_IMPORTED_MODULE_4___default.a ],
         header: {
             left: 'prev,next today',
             center: 'title',
@@ -14469,8 +14469,9 @@ document.addEventListener('DOMContentLoaded', function() {
         eventLimit: true, // allow "more" link when too many events
         events: [
             {
+                id: 5,
                 title: 'All Day Event',
-                start: '2018-01-01',
+                start: '2019-05-25',
             },
             {
                 title: 'Long Event',
@@ -14525,20 +14526,70 @@ document.addEventListener('DOMContentLoaded', function() {
         ]
     });
 
+
     calendar.render();
+
+    $("#test").click(function () {
+        sendAjax("all", 5 );
+    });
+
 });
 
-function getDate() {
-    var d = new Date();
+        /**
+         * vraci dnesni datum
+         * @returns {string}
+         */
+        function getDate() {
+            var d = new Date();
 
-    var month = d.getMonth()+1;
-    var day = d.getDate();
+            var month = d.getMonth()+1;
+            var day = d.getDate();
 
-    var output = d.getFullYear() + '-' +
-        ((''+month).length<2 ? '0' : '') + month + '-' +
-        ((''+day).length<2 ? '0' : '') + day ;
-    return output;
-}
+            var output = d.getFullYear() + '-' +
+                ((''+month).length<2 ? '0' : '') + month + '-' +
+                ((''+day).length<2 ? '0' : '') + day ;
+            return output;
+        }
+
+
+        /**
+         * posles dotaz na api
+         * @param select - definice toho co chces ziskat
+         * @param userInputString - upresnujici informace {napr id}
+         */
+        function sendAjax (select, userInputString) {
+            let timeoutPromise = 1000000;
+
+            $.ajax({
+                url: "/admin/index.php/plugin/scheduler-api" ,
+                dataType: 'text',
+                type: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    select: select,
+                    id: userInputString,
+                    timeout: timeoutPromise
+                }),
+                success: function( data, textStatus, jQxhr ){
+                    var response = JSON.parse(data);
+                    console.log(data);
+                    if (response.msg === "ok") {
+                        console.log(response.results);
+                        // melo by stacit jen tady meneni kalendare ale pro jistotu pridam volani funkce
+                        doResponseAction(select);
+                    }
+                },
+                error: function( jqXhr, textStatus, errorThrown ){
+                    console.log( errorThrown );
+                }
+            });
+        }
+
+        function doResponseAction(select) {
+            if (select == "all") {
+                //do something
+            }
+        }
 
 /***/ })
 

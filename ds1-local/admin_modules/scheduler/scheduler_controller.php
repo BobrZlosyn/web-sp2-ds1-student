@@ -39,6 +39,8 @@ class scheduler_controller extends ds1_base_controller
         $content_params["route_params"] = array();
         $content_params["controller"] = $this;
 
+        $content_params["url_scheduler_api"] = $this->makeUrlByRoute("scheduler_api");
+
         // JMENA EXTERNICH ROUT
         $content_params["pokoje_route_name"] = "pokoje";
 

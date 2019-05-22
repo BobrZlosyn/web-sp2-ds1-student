@@ -77,8 +77,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     calendar.render();
+
+    $("#test").click(function () {
+        sendAjax("all", 5 );
+    });
+
 });
 
+/**
+ * vraci dnesni datum
+ * @returns {string}
+ */
 function getDate() {
     var d = new Date();
 
@@ -89,4 +98,43 @@ function getDate() {
         ((''+month).length<2 ? '0' : '') + month + '-' +
         ((''+day).length<2 ? '0' : '') + day ;
     return output;
+}
+
+
+/**
+ * posles dotaz na api
+ * @param select - definice toho co chces ziskat
+ * @param userInputString - upresnujici informace {napr id}
+ */
+function sendAjax (select, userInputString) {
+    let timeoutPromise = 1000000;
+
+    $.ajax({
+        url: "/admin/index.php/plugin/scheduler-api" ,
+        dataType: 'text',
+        type: 'post',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            select: select,
+            id: userInputString,
+            timeout: timeoutPromise
+        }),
+        success: function( data, textStatus, jQxhr ){
+            var response = JSON.parse(data);
+            if (response.msg === "ok") {
+                console.log(response.results);
+                // melo by stacit jen tady meneni kalendare ale pro jistotu pridam volani funkce
+                doResponseAction(select);
+            }
+        },
+        error: function( jqXhr, textStatus, errorThrown ){
+            console.log( errorThrown );
+        }
+    });
+}
+
+function doResponseAction(select) {
+    if (select == "all") {
+        //do something
+    }
 }

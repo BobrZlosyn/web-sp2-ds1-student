@@ -28,8 +28,8 @@ class scheduler_api_controller extends ds1_base_controller
         $this->checkAdminLogged();
 
         // objekt pro praci s obyvateli
-        $obyvatele = new obyvatele();
-        $obyvatele->SetPDOConnection($this->ds1->GetPDOConnection());
+        $scheduler = new Scheduler();
+        $scheduler->SetPDOConnection($this->ds1->GetPDOConnection());
 
         // DATA - v postu dostanu field a search
 
@@ -41,58 +41,134 @@ class scheduler_api_controller extends ds1_base_controller
         // print_r($post_data);
 
         // nacist vstupni data: field = napr. klicove_slovo, search: vstup od uživatele, např. lyž
-        $field = @$post_data["field"];
-        $search_string = @$post_data["search"];
-        $base_url = @$post_data["base_url"];
+        $select = @$post_data["select"];
+        $id = @$post_data["id"];
         //echo "field: $field, search: $search_string <br/>";
 
-        if ($field == "obyvatele") {
-            // hledam obyvatele dle retezce $search
 
-            $count_on_page = 10;    // limit na pocet vysledku pro autocomplete
-            $where_array = array();
-            // count_on_page a page se u prikazu count neuvazuje
-            $total = $obyvatele->adminSearchItems($search_string, "count", 1, 1);
-            //echo "total: $total"; exit;
-
-            $obyvatele_list = $obyvatele->adminSearchItems($search_string, "data", 1, $count_on_page);
-
-            // slozit data for response - vysledkem musi byt objekt a nikoliv pole kuli
-            /* To avoid XSSI JSON Hijacking, you should pass an associative array as the outer-most array to JsonResponse and not an
-            indexed array so that the final result is an object (e.g. {"object": "not inside an array"})
-            instead of an array (e.g. [{"object": "inside an array"}]).*/
-            $data_for_response = array();
-            $data_for_response["msg"] = "ok - field: $field, search: $search_string";
-
-            if ($obyvatele_list)
-                foreach ($obyvatele_list as $ob) {
-                    // slozit desc = co se zobrazi
-                    $desc_pom = "$ob[prijmeni] $ob[jmeno]";
-
-                    if (trim($ob["vek"]) != "") {
-                        // prihodit vek
-                        $desc_pom .= " ($ob[vek] let)";
-                    }
-
-                    // pridat k obyvateli
-                    $ob["id_klicove_slovo"] = $ob["id"];
-                    $ob["klicove_slovo"] = $search_string;
-                    $ob["autocomplete_desc"] = $desc_pom;
-
-                    // url, kam se mam dostat na kliknuti - musim na routu obyvatele a nikoliv obyvatele-api
-                    $ob["url"] = $this->makeUrlByRoute(DS1_ROUTE_ADMIN_OBYVATELE, array("action" => "obyvatel_detail_show", "obyvatel_id" => $ob["id"]));
-
-                    // pro testovani
-                    //$ob["url"] = $base_url."index.php/plugin/obyvatele?action=obyvatel_detail_show&obyvatel_id=".$ob["id"];
-
-                    // vlozit do vysledku
-                    $data_for_response["autocomplete_results"][] = $ob;
-                }
-
-            // vratit json response
-            return new JsonResponse($data_for_response);
+        if ($select == "days") {
+            return $this->selectServicesDays($scheduler);
         }
 
-        return new Response("Controller pro obyvatele API.");
+        if ($select == "detail") {
+            return $this->selectDetailServices($scheduler, $id);
+        }
+
+        if ($select == "time") {
+            return $this->selectServicesTime($scheduler);
+        }
+
+        if ($select == "all") {
+            return $this->selectServicesAll($scheduler);
+        }
+
+        if ($select == "obyvatel") {
+            return $this->selectServicesObyvatele($scheduler, $id);
+        }
+
+        if ($select == "type") {
+            return $this->selectServicesType($scheduler, $id);
+        }
+
+        if ($select == "history") {
+            return $this->selectServicesHistory($scheduler);
+        }
+
+        return new JsonResponse("We have nothing to offer you.");
+    }
+
+    /**
+     * nacita dny sluzeb
+     * @var $scheduler Scheduler
+     * @return JsonResponse
+     */
+    private function selectServicesDays($scheduler){
+        $result = $scheduler->adminLoadServices();
+        return $this->transformToJSON($result);
+    }
+
+    /**
+     * nacita detail jedne sluzby
+     * @var $scheduler Scheduler
+     * @var $id int - cislo zaznamu vykonu
+     * @return JsonResponse
+     */
+    private function selectDetailServices($scheduler, $id){
+        $result = $scheduler->adminLoadServiceDetail($id);
+        return $this->transformToJSON($result);
+    }
+
+    /**
+     * nacita hodiny sluzeb
+     * @var $scheduler Scheduler
+     * @return JsonResponse
+     */
+    private function selectServicesTime($scheduler){
+        $result = $scheduler->adminLoadTimeServices();
+        return $this->transformToJSON($result);
+    }
+
+
+    /**
+     * nacita vse o sluzbach
+     * @var $scheduler Scheduler
+     * @return JsonResponse
+     */
+    private function selectServicesAll($scheduler){
+        $result = $scheduler->adminLoadAllService();
+        return $this->transformToJSON($result);
+    }
+
+    /**
+     * nacita sluzby podle obyvatele
+     * @var $scheduler Scheduler
+     * @var $id int - cislo obyvatele ktereho chceme filtrovat
+     * @return JsonResponse
+     */
+    private function selectServicesObyvatele($scheduler, $id){
+        $result = $scheduler->adminLoadServiceObyvatel($id);
+        return $this->transformToJSON($result);
+    }
+
+
+    /**
+     * nacita sluzby podle typu
+     * @var $scheduler Scheduler
+     * @var $id int - cislo typu vykonu
+     * @return JsonResponse
+     */
+    private function selectServicesType($scheduler, $id){
+        $result = $scheduler->adminLoadServiceType($id);
+        return $this->transformToJSON($result);
+    }
+
+    /**
+     * nacita sluzby se zaznamem (jen ty co uz probehli tedy - moznost pro nacteni detailu )
+     * @var $scheduler Scheduler
+     * @return JsonResponse
+     */
+    private function selectServicesHistory($scheduler ){
+        $result = $scheduler->adminLoadHistoryService();
+        return $this->transformToJSON($result);
+    }
+
+    /**
+     * transformuje vysledky z DB do JSONu
+     * @param $result
+     * @return JsonResponse
+     */
+    private function transformToJSON ($result) {
+        $data_for_response = array();
+        if ($result){
+            $data_for_response["msg"] = "ok";
+
+            foreach ($result as $service) {
+                $data_for_response["results"][] = $service;
+            }
+
+        }else {
+            $data_for_response["msg"] = "fail";
+        }
+        return new JsonResponse($data_for_response);
     }
 }
