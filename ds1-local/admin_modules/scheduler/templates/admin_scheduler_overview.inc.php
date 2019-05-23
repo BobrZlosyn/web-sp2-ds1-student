@@ -69,11 +69,12 @@
             <div class="modal-body">
                 <p>Výkon služby od: <span id="event-from"></span></p>
                 <p>Výkon služby do: <span id="event-to"></span></p>
+                <p>Obyvatel: <span id="event-obyvatel"></span></p>
 
-                <p id="description"></p>
+                <p>Popis: <span id="description"></span></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Zavřít</button>
             </div>
         </div>
     </div>

@@ -14469,14 +14469,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         eventClick: function(info) {
 
-            //ziskat event podle ID
-            info.event.id;
 
             document.getElementById("eventTitle").innerHTML = info.event.title;
-            document.getElementById("event-from").innerHTML = info.event.start;
-            document.getElementById("event-to").innerHTML = info.event.end;
 
-            sendAjax("detail", info.event.id, calendar);
+            sendAjax("service", info.event.id, calendar);
 
             $("#eventInfo").modal("show");
             //modal.style.display = "block";
@@ -14629,9 +14625,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            if (select == "detail"){
-                console.log(results);
-                //document.getElementById("description").innerHTML = info.event.description;
+            if (select == "service"){
+                document.getElementById("event-from").innerHTML = results[0].datum_od + " " + results[0].cas_od;
+                document.getElementById("event-to").innerHTML = results[0].datum_do + " " + results[0].cas_do;
+                document.getElementById("event-obyvatel").innerHTML = results[0].jmeno + " " + results[0].prijmeni;
+
+                document.getElementById("description").innerHTML = results[0].popis;
             }
         }
 
