@@ -162,13 +162,13 @@ class scheduler extends \ds1\core\ds1_base_model
 
         if ($id + 0 > 0) {
             $table_name =  TABLE_ZAZNAM_VYKONU. " zv";
-            $where_array  = "zv.zaznam_vykonu_id = " . $id;
+            $where_array  = "zv.zaznam_vykonu_id = ? ";
 
             // 1) pripravit dotaz s dotaznikama
             $query = "select * from ".$table_name. " where " . $where_array;
             // echo $query;
 
-            return $this->executeQuery($query);
+            return $this->executeQuery($query, $id);
         }
 
         return array();
@@ -194,13 +194,13 @@ class scheduler extends \ds1\core\ds1_base_model
         $where_array  = "s.typ_vykonu_id = tv.id AND " .
             "s.id = pv.sluzba_id AND " .
             "s.obyvatel_id = o.id AND " .
-            "s.obyvatel_id = " . $id;
+            "s.obyvatel_id = ? ";
 
         // 1) pripravit dotaz s dotaznikama
         $query = "select " . $columns . " from ".$table_name. " where " . $where_array;
         // echo $query;
 
-        return $this->executeQuery($query);
+        return $this->executeQuery($query, $id);
 
 
     }
@@ -224,14 +224,14 @@ class scheduler extends \ds1\core\ds1_base_model
         $where_array  = "s.typ_vykonu_id = tv.id AND " .
             "s.id = pv.sluzba_id AND " .
             "s.obyvatel_id = o.id AND " .
-            "s.typ_vykonu_id = " . $id;
+            "s.typ_vykonu_id = ? ";
 
         // 1) pripravit dotaz s dotaznikama
         $query = "select " . $columns . " from ".$table_name. " where " . $where_array;
         // echo $query;
 
 
-        return $this->executeQuery($query);
+        return $this->executeQuery($query, $id);
 
     }
 
@@ -322,9 +322,14 @@ class scheduler extends \ds1\core\ds1_base_model
      * @param $query dotaz do DB
      * @return mixed
      */
-    private function executeQuery($query) {
+    private function executeQuery($query, $param = null) {
         // 2) pripravit si statement
         $statement = $this->connection->prepare($query);
+
+        if ($param != null) {
+            $statement->bindValue(1, $param);
+        }
+
         // 4) provest dotaz
         $statement->execute();
 
