@@ -45,8 +45,6 @@ class scheduler_api_controller extends ds1_base_controller
         $id = @$post_data["id"];
         //echo "field: $field, search: $search_string <br/>";
 
-        $select = "obyvatel";
-        $id = "1";
 
         switch($select) {
             case "days":    return $this->selectServicesDays($scheduler);

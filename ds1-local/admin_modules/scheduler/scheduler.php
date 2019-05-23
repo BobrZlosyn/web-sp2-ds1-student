@@ -112,6 +112,7 @@ class scheduler extends \ds1\core\ds1_base_model
 
     }
 
+
     /**
      * Admin - nacist vsechny sluzby s casem i datem jen historicke (ukazou se jen se zaznamem jiz.
      *
