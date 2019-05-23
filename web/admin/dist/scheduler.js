@@ -14469,14 +14469,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         eventClick: function(info) {
 
-            //ziskat event podle ID
-            info.event.id;
-
             document.getElementById("eventTitle").innerHTML = info.event.title;
-            document.getElementById("event-from").innerHTML = info.event.start;
-            document.getElementById("event-to").innerHTML = info.event.end;
+            //document.getElementById("event-from").innerHTML = info.event.start;
+            //document.getElementById("event-to").innerHTML = info.event.end;
 
-            sendAjax("detail", info.event.id, calendar);
+            sendAjax("service", info.event.id, calendar);
+
 
             $("#eventInfo").modal("show");
             //modal.style.display = "block";
@@ -14629,10 +14627,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            if (select == "detail"){
+            if (select == "service"){
                 console.log(results);
-                //document.getElementById("description").innerHTML = info.event.description;
             }
+
         }
 
 /***/ })
