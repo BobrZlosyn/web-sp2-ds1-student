@@ -70,10 +70,13 @@
                 <p>Výkon služby od: <span id="event-from"></span></p>
                 <p>Výkon služby do: <span id="event-to"></span></p>
 
+                <p>Jméno obyvatele: <span id="event-obyvatel"></span></p>
+                <p>Pokoj: <span id="event-pokoj"></span></p>
+
                 <p id="description"></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Zavřít</button>
             </div>
         </div>
     </div>
