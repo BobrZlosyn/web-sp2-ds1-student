@@ -44,7 +44,6 @@ class scheduler_api_controller extends ds1_base_controller
         $select = @$post_data["select"];
         $id = @$post_data["id"];
         $limit = @$post_data["limit"];
-        //echo "field: $field, search: $search_string <br/>";
 
         if (!empty($limit)) {
             $scheduler->setLimit($limit);
@@ -198,7 +197,7 @@ class scheduler_api_controller extends ds1_base_controller
             }
 
         }else {
-            $data_for_response["msg"] = "fail - couldnt get data";
+            $data_for_response["msg"] = "fail - no data found!";
         }
         return new JsonResponse($data_for_response);
     }
