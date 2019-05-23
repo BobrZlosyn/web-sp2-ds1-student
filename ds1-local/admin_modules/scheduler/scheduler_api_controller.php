@@ -45,6 +45,9 @@ class scheduler_api_controller extends ds1_base_controller
         $id = @$post_data["id"];
         //echo "field: $field, search: $search_string <br/>";
 
+        $select = "obyvatel";
+        $id = "1";
+
         switch($select) {
             case "days":    return $this->selectServicesDays($scheduler);
             case "detail":  return $this->selectDetailServices($scheduler, $id);
@@ -56,9 +59,9 @@ class scheduler_api_controller extends ds1_base_controller
             case "types": return $this->selectTypes($scheduler);
             case "obInService": return $this->selectObyvatelInServices($scheduler);
             case "users": return $this->selectServicesUsers($scheduler);
-            default : new JsonResponse("We have nothing to offer you.");
         }
 
+        return new JsonResponse("We have nothing to offer you.");
     }
 
     /**

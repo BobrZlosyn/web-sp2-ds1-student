@@ -152,7 +152,7 @@ class scheduler extends \ds1\core\ds1_base_model
      * @param int $id - cislo zaznamu
      * @return mixed
      */
-    public function adminLoadServiceDetail($type = "detail", $id)
+    public function adminLoadServiceDetail($id, $type = "detail")
     {
         $columns = "*";
         if ($type == "all") {
@@ -181,20 +181,18 @@ class scheduler extends \ds1\core\ds1_base_model
      * @param int $id cislo obyvatele
      * @return mixed
      */
-    public function adminLoadServiceObyvatel($type = "obyvatel", $id)
+    public function adminLoadServiceObyvatel($id, $type = "obyvatel")
     {
         $columns = "*";
 
         $table_name =   TABLE_SLUZBA . " s, " .
             TABLE_TYP_VYKONU . " tv, " .
             TABLE_PLAN_VYKONU . " pv, " .
-            TABLE_OBYVATELE . " o, " .
-            TABLE_ZAZNAM_VYKONU. " zv";
+            TABLE_OBYVATELE . " o " ;
 
         $where_array  = "s.typ_vykonu_id = tv.id AND " .
             "s.id = pv.sluzba_id AND " .
             "s.obyvatel_id = o.id AND " .
-            "zv.plan_vykonu_id = pv.id AND " .
             "s.obyvatel_id = " . $id;
 
         // 1) pripravit dotaz s dotaznikama
@@ -213,21 +211,19 @@ class scheduler extends \ds1\core\ds1_base_model
      * @param int $id cislo typu vykonu
      * @return mixed
      */
-    public function adminLoadServiceType($type = "type", $id)
+    public function adminLoadServiceType($id, $type = "type")
     {
         $columns = "*";
 
         $table_name =   TABLE_SLUZBA . " s, " .
             TABLE_TYP_VYKONU . " tv, " .
             TABLE_PLAN_VYKONU . " pv, " .
-            TABLE_OBYVATELE . " o, " .
-            TABLE_ZAZNAM_VYKONU. " zv";
+            TABLE_OBYVATELE . " o" ;
 
         $where_array  = "s.typ_vykonu_id = tv.id AND " .
             "s.id = pv.sluzba_id AND " .
             "s.obyvatel_id = o.id AND " .
-            "zv.plan_vykonu_id = pv.id AND " .
-            "s.typ_vykonu = " . $id;
+            "s.typ_vykonu_id = " . $id;
 
         // 1) pripravit dotaz s dotaznikama
         $query = "select " . $columns . " from ".$table_name. " where " . $where_array;
@@ -330,7 +326,15 @@ class scheduler extends \ds1\core\ds1_base_model
         $statement = $this->connection->prepare($query);
         // 4) provest dotaz
         $statement->execute();
+
+        // 5) kontrola chyb
+        $errors = $statement->errorInfo();
+        //printr($errors);
+
+       // print_r($query);
         $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+
         return $rows;
     }
 
