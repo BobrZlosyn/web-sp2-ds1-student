@@ -14451,8 +14451,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
 
@@ -14467,70 +14465,37 @@ document.addEventListener('DOMContentLoaded', function() {
         navLinks: true, // can click day/week names to navigate views
         editable: true,
         eventLimit: true, // allow "more" link when too many events
-        events: [
-            {
-                id: 5,
-                title: 'All Day Event',
-                start: '2019-05-25',
-            },
-            {
-                title: 'Long Event',
-                start: '2018-01-07',
-                end: '2018-01-10'
-            },
-            {
-                id: 999,
-                title: 'Repeating Event',
-                start: '2018-01-09T16:00:00'
-            },
-            {
-                id: 999,
-                title: 'Repeating Event',
-                start: '2018-01-16T16:00:00'
-            },
-            {
-                title: 'Conference',
-                start: '2018-01-11',
-                end: '2018-01-13'
-            },
-            {
-                title: 'Meeting',
-                start: '2018-01-12T10:30:00',
-                end: '2018-01-12T12:30:00'
-            },
-            {
-                title: 'Lunch',
-                start: '2018-01-12T12:00:00'
-            },
-            {
-                title: 'Meeting',
-                start: '2018-01-12T14:30:00'
-            },
-            {
-                title: 'Happy Hour',
-                start: '2018-01-12T17:30:00'
-            },
-            {
-                title: 'Dinner',
-                start: '2018-01-12T20:00:00'
-            },
-            {
-                title: 'Birthday Party',
-                start: '2018-01-13T07:00:00'
-            },
-            {
-                title: 'Click for Google',
-                url: 'http://google.com/',
-                start: '2018-01-28'
-            }
-        ]
+        events: [],
+
+        eventClick: function(info) {
+
+            //ziskat event podle ID
+            info.event.id;
+            console.log(info.event.title);
+
+            document.getElementById("eventTitle").innerHTML = info.event.title;
+            document.getElementById("event-from").innerHTML = info.event.start;
+            document.getElementById("event-to").innerHTML = info.event.end;
+
+            document.getElementById("description").innerHTML = info.event.description;
+
+            $("#eventInfo").modal("show");
+            //modal.style.display = "block";
+
+
+        }
     });
 
 
+    sendAjax("all", 5, calendar );
     calendar.render();
 
+
     $("#test").click(function () {
-        sendAjax("all", 5 );
+        for(var event in calendar.getEvents()){
+            calendar.getEvents()[0].remove();
+        }
+        sendAjax("all", 5, calendar );
     });
 
 });
@@ -14557,7 +14522,7 @@ document.addEventListener('DOMContentLoaded', function() {
          * @param select - definice toho co chces ziskat
          * @param userInputString - upresnujici informace {napr id}
          */
-        function sendAjax (select, userInputString) {
+        function sendAjax (select, userInputString, calendar) {
             let timeoutPromise = 1000000;
 
             $.ajax({
@@ -14572,14 +14537,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 }),
                 success: function( data, textStatus, jQxhr ){
                     var response = JSON.parse(data);
-                    console.log(data);
+                    //console.log(data);
+                   // calendar.events = new Array();
                     if (response.msg === "ok") {
-                        console.log(response.results);
+                        //console.log(response.results);
+
+                        for(var i in response.results){
+                            var newEvent = {
+                                id: response.results[i].id,
+                                title: response.results[i].nazev,
+                                start: response.results[i].datum_od + 'T' + response.results[i].cas_od,
+                                end: response.results[i].datum_do + 'T' + response.results[i].cas_do,
+                                description: response.results[i].popis
+                            };
+
+                            calendar.addEvent(newEvent);
+                            //calendar.events.push(newEvent);
+                        }
+
+                        //calendar.render();
                         // melo by stacit jen tady meneni kalendare ale pro jistotu pridam volani funkce
                         doResponseAction(select);
                     }
                 },
-                error: function( jqXhr, textStatus, errorThrown ){
+            error: function( jqXhr, textStatus, errorThrown ){
                     console.log( errorThrown );
                 }
             });
