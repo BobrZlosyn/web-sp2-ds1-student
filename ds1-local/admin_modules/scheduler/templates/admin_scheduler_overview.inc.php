@@ -11,7 +11,6 @@
         </div>
         <div class="card-body" ng-controller="adminScheduler">
             <div class="row">
-
             </div>
 
             <hr />
