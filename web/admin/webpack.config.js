@@ -8,7 +8,7 @@ module.exports = {
     },
     output: {
         filename: 'scheduler.js',
-        path: path.join(__dirname, 'dist')
+        path: path.join(__dirname, 'template/js/scheduler/dist')
     },
     devtool: 'sourcemap'
 }

@@ -1,5 +1,4 @@
 import { Calendar } from '@fullcalendar/core';
-import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
@@ -7,8 +6,8 @@ import listPlugin from '@fullcalendar/list';
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
 
-    var calendar = new _fullcalendar_core__WEBPACK_IMPORTED_MODULE_0__["Calendar"](calendarEl, {
-        plugins: [ _fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_2___default.a, _fullcalendar_timegrid__WEBPACK_IMPORTED_MODULE_3___default.a, _fullcalendar_list__WEBPACK_IMPORTED_MODULE_4___default.a ],
+    var calendar = new Calendar (calendarEl, {
+        plugins: [ dayGridPlugin, timeGridPlugin, listPlugin ],
         header: {
             left: 'prev,next today',
             center: 'title',
@@ -19,18 +18,14 @@ document.addEventListener('DOMContentLoaded', function() {
         editable: true,
         eventLimit: true, // allow "more" link when too many events
         events: [],
+        locale: 'cs',
 
         eventClick: function(info) {
 
-            //ziskat event podle ID
-            info.event.id;
-            console.log(info.event.title);
 
             document.getElementById("eventTitle").innerHTML = info.event.title;
-            document.getElementById("event-from").innerHTML = info.event.start;
-            document.getElementById("event-to").innerHTML = info.event.end;
 
-            document.getElementById("description").innerHTML = info.event.description;
+            sendAjax("service", info.event.id, calendar);
 
             $("#eventInfo").modal("show");
             //modal.style.display = "block";
@@ -40,8 +35,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 
+    calendar.setOption('locale', 'cs');
+
     sendAjax("all", 5, calendar );
     calendar.render();
+
+    sendAjax("types", 5, calendar);
+    sendAjax("obInService", 5, calendar);
 
 
     $("#test").click(function () {
@@ -51,12 +51,50 @@ document.addEventListener('DOMContentLoaded', function() {
         sendAjax("all", 5, calendar );
     });
 
+    $("#filter").click(function () {
+        for(var event in calendar.getEvents()){
+            calendar.getEvents()[0].remove();
+        }
+
+        if(document.getElementById("chooseService").value.length != 0){
+            var type = document.getElementById("chooseService").value;
+            var datalist = document.getElementById("datalist-service");
+            var options = datalist.getElementsByTagName("option");
+
+            var i;
+            for(i = 0; i < options.length; i++){
+                if(options[i].value == type){
+                    console.log(options[i].id);
+
+                    sendAjax("type", options[i].id, calendar);
+                }
+            }
+        }
+
+        if(document.getElementById("chooseObyvatel").value.length != 0){
+
+            var type = document.getElementById("chooseObyvatel").value;
+            var datalist = document.getElementById("datalist-obyvatel");
+            var options = datalist.getElementsByTagName("option");
+
+            var i;
+            for(i = 0; i < options.length; i++){
+                if(options[i].value == type){
+                    console.log(options[i].id);
+
+                    sendAjax("obyvatel", options[i].id, calendar);
+                }
+            }
+        }
+
+        if(document.getElementById("chooseObyvatel").value.length == 0 && document.getElementById("chooseService").value.length == 0){
+            sendAjax("all", 5, calendar);
+        }
+
+    });
+
 });
 
-/**
- * vraci dnesni datum
- * @returns {string}
- */
 /**
  * vraci dnesni datum
  * @returns {string}
@@ -96,25 +134,11 @@ function sendAjax (select, userInputString, calendar) {
             var response = JSON.parse(data);
             //console.log(data);
             // calendar.events = new Array();
+            console.log(response.msg);
             if (response.msg === "ok") {
-                //console.log(response.results);
 
-                for(var i in response.results){
-                    var newEvent = {
-                        id: response.results[i].id,
-                        title: response.results[i].nazev,
-                        start: response.results[i].datum_od + 'T' + response.results[i].cas_od,
-                        end: response.results[i].datum_do + 'T' + response.results[i].cas_do,
-                        description: response.results[i].popis
-                    };
-
-                    calendar.addEvent(newEvent);
-                    //calendar.events.push(newEvent);
-                }
-
-                //calendar.render();
                 // melo by stacit jen tady meneni kalendare ale pro jistotu pridam volani funkce
-                doResponseAction(select);
+                doResponseAction(select, response.results, calendar);
             }
         },
         error: function( jqXhr, textStatus, errorThrown ){
@@ -123,9 +147,42 @@ function sendAjax (select, userInputString, calendar) {
     });
 }
 
-function doResponseAction(select) {
-    if (select == "all") {
-        //do something
+function doResponseAction(select, results, calendar) {
+    if (select == "all" || select == "type" || select == "obyvatel") {
+        for (var i in results) {
+            var newEvent = {
+                id: results[i].id,
+                title: results[i].nazev,
+                start: results[i].datum_od + 'T' + results[i].cas_od,
+                end: results[i].datum_do + 'T' + results[i].cas_do,
+                description: results[i].popis
+            };
+
+            calendar.addEvent(newEvent);
+        }
     }
 
+    if (select == "types") {
+        var dropdown = document.getElementById("datalist-service");
+
+        for (var i in results) {
+            dropdown.innerHTML += "<option id=" + results[i].id + ">" + results[i].nazev + "</option>";
+        }
+    }
+
+    if (select == "obInService") {
+        var dropdown = document.getElementById("datalist-obyvatel");
+
+        for (var i in results) {
+            dropdown.innerHTML += "<option id=" + results[i].id + ">" + results[i].jmeno + " " + results[i].prijmeni + "</option>";
+        }
+    }
+
+    if (select == "service"){
+        document.getElementById("event-from").innerHTML = results[0].datum_od + " " + results[0].cas_od;
+        document.getElementById("event-to").innerHTML = results[0].datum_do + " " + results[0].cas_do;
+        document.getElementById("event-obyvatel").innerHTML = results[0].jmeno + " " + results[0].prijmeni;
+
+        document.getElementById("description").innerHTML = results[0].popis;
+    }
 }
