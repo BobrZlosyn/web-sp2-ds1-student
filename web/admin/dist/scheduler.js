@@ -14450,12 +14450,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
 
     var calendar = new _fullcalendar_core__WEBPACK_IMPORTED_MODULE_0__["Calendar"](calendarEl, {
-        plugins: [ _fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_2___default.a, _fullcalendar_timegrid__WEBPACK_IMPORTED_MODULE_3___default.a, _fullcalendar_list__WEBPACK_IMPORTED_MODULE_4___default.a ],
+        plugins: [ _fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_2___default.a, _fullcalendar_timegrid__WEBPACK_IMPORTED_MODULE_3___default.a, _fullcalendar_list__WEBPACK_IMPORTED_MODULE_4___default.a],
         header: {
             left: 'prev,next today',
             center: 'title',
@@ -14466,18 +14465,18 @@ document.addEventListener('DOMContentLoaded', function() {
         editable: true,
         eventLimit: true, // allow "more" link when too many events
         events: [],
+        locale: 'cs',
 
         eventClick: function(info) {
 
             //ziskat event podle ID
             info.event.id;
-            console.log(info.event.title);
 
             document.getElementById("eventTitle").innerHTML = info.event.title;
             document.getElementById("event-from").innerHTML = info.event.start;
             document.getElementById("event-to").innerHTML = info.event.end;
 
-            document.getElementById("description").innerHTML = info.event.description;
+            sendAjax("detail", info.event.id, calendar);
 
             $("#eventInfo").modal("show");
             //modal.style.display = "block";
@@ -14486,6 +14485,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+
+    calendar.setOption('locale', 'cs');
 
     sendAjax("all", 5, calendar );
     calendar.render();
@@ -14584,6 +14585,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     var response = JSON.parse(data);
                     //console.log(data);
                    // calendar.events = new Array();
+                    console.log(response.msg);
                     if (response.msg === "ok") {
 
                         // melo by stacit jen tady meneni kalendare ale pro jistotu pridam volani funkce
@@ -14625,6 +14627,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 for (var i in results) {
                     dropdown.innerHTML += "<option id=" + results[i].id + ">" + results[i].jmeno + " " + results[i].prijmeni + "</option>";
                 }
+            }
+
+            if (select == "detail"){
+                console.log(results);
+                //document.getElementById("description").innerHTML = info.event.description;
             }
         }
 

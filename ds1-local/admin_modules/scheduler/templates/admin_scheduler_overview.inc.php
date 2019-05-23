@@ -11,27 +11,34 @@
         </div>
         <div class="card-body" ng-controller="adminScheduler">
             <div class="row">
-                <span>
-                    Typ služby:
-                    <div class="dropdown" id="dropdown-service">
-                        <input type="text" list="datalist-service" id="chooseService" onkeyup="filterFunction('chooseService', 'dropdown-service')">
-                        <datalist id="datalist-service">
+                <div class="col-md-2">
+                    <span>
+                        Typ služby:
+                        <div class="dropdown" id="dropdown-service">
+                            <input type="text" list="datalist-service" id="chooseService" onkeyup="filterFunction('chooseService', 'dropdown-service')">
+                            <datalist id="datalist-service">
 
 
-                        </datalist>
-                    </div>
+                            </datalist>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-md-2">
+                    <span>
+                        Obyvatel:
+                        <div class="dropdown" id="dropdown-obyvatel">
+                            <input type="text" list="datalist-obyvatel" id="chooseObyvatel" onkeyup="filterFunction('chooseObyvatel', 'dropdown-obyvatel')">
+                            <datalist id="datalist-obyvatel">
 
-                    Obyvatel:
-                    <div class="dropdown" id="dropdown-obyvatel">
-                        <input type="text" list="datalist-obyvatel" id="chooseObyvatel" onkeyup="filterFunction('chooseObyvatel', 'dropdown-obyvatel')">
-                        <datalist id="datalist-obyvatel">
 
+                            </datalist>
+                        </div>
+                    </span>
 
-                        </datalist>
-                    </div>
-
-                    <input type="submit" id="filter" class="btn btn-primary btn-sm" value="Zobraz" />
-                </span>
+                </div>
+                <div class="col-md-1">
+                    <input type="submit" id="filter" class="btn btn-primary" value="Zobraz" />
+                </div>
             </div>
 
             <hr />
