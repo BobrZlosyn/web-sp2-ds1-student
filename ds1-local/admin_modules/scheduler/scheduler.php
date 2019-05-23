@@ -15,18 +15,17 @@ class scheduler extends \ds1\core\ds1_base_model
 
     /**
      * Types
-     *      days
-     *      time
-     *      all
-     *      history
-     *      detail
-     *      type
-     *      obyvatel
-     *      types
-     *      obInService
-     *      users
+     *      days - vraci dny sluzeb
+     *      time - vraci sluzby s casem
+     *      all - vraci vsechny sluzby (bez zaznamu)
+     *      history - vraci vsechny sluzby co maji zaznam
+     *      detail - vraci detail provedeneho vykonu (zaznam)
+     *      type - vraci sluzby podle typu vykonu
+     *      obyvatel - vraci sluzby podle id obyvatele
+     *      types - vraci vsechny typy vykonu
+     *      obInService - vraci obcany kteri maji sluzbu
+     *      users - vraci uzivatele kteri maji sluzbu
      */
-
 
 
     /**
@@ -320,6 +319,7 @@ class scheduler extends \ds1\core\ds1_base_model
     /**
      * vraci vysledek dotazu
      * @param $query dotaz do DB
+     * @param $param value to be added to query
      * @return mixed
      */
     private function executeQuery($query, $param = null) {
