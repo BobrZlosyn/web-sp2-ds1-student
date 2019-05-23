@@ -28,6 +28,13 @@ class scheduler extends \ds1\core\ds1_base_model
      *      service - vraci sluzbu podle ID
      */
 
+    private $limit = null;
+
+    public function setLimit ($limit) {
+        if ($limit + 0> 0) {
+            $this->limit = $limit;
+        }
+    }
 
     /**
      * Admin - nacist dny sluzeb.
@@ -130,7 +137,7 @@ class scheduler extends \ds1\core\ds1_base_model
 
         $where_array  = "s.typ_vykonu_id = tv.id AND " .
             "s.id = pv.sluzba_id AND " .
-            "s.id = ? " .
+            "s.id = ? AND " .
             "s.obyvatel_id = o.id ";
 
         // 1) pripravit dotaz s dotaznikama
@@ -354,11 +361,17 @@ class scheduler extends \ds1\core\ds1_base_model
      */
     private function executeQuery($query, $param = null) {
         // 2) pripravit si statement
+
+
+
+
         $statement = $this->connection->prepare($query);
 
+        $bindValue = 1;
         if ($param != null) {
-            $statement->bindValue(1, $param);
+            $statement->bindValue($bindValue++, $param);
         }
+
 
         // 4) provest dotaz
         $statement->execute();

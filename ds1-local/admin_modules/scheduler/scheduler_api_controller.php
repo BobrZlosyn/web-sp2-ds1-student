@@ -43,8 +43,12 @@ class scheduler_api_controller extends ds1_base_controller
         // nacist vstupni data: field = napr. klicove_slovo, search: vstup od uživatele, např. lyž
         $select = @$post_data["select"];
         $id = @$post_data["id"];
+        $limit = @$post_data["limit"];
         //echo "field: $field, search: $search_string <br/>";
 
+        if (!empty($limit)) {
+            $scheduler->setLimit($limit);
+        }
 
         switch($select) {
             case "days":    return $this->selectServicesDays($scheduler);
