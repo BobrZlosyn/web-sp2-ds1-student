@@ -70,7 +70,6 @@
                 <p>Výkon služby od: <span id="event-from"></span></p>
                 <p>Výkon služby do: <span id="event-to"></span></p>
                 <p>Obyvatel: <span id="event-obyvatel"></span></p>
-
                 <p>Popis: <span id="description"></span></p>
             </div>
             <div class="modal-footer">
