@@ -6,11 +6,32 @@
                 Planovaci tabule
             </div>
             <div class="pull-right">
-                neco dalsiho
+
             </div>
         </div>
         <div class="card-body" ng-controller="adminScheduler">
             <div class="row">
+                <span>
+                    Typ služby:
+                    <div class="dropdown" id="dropdown-service">
+                        <input type="text" list="datalist-service" id="chooseService" onkeyup="filterFunction('chooseService', 'dropdown-service')">
+                        <datalist id="datalist-service">
+
+
+                        </datalist>
+                    </div>
+
+                    Obyvatel:
+                    <div class="dropdown" id="dropdown-obyvatel">
+                        <input type="text" list="datalist-obyvatel" id="chooseObyvatel" onkeyup="filterFunction('chooseObyvatel', 'dropdown-obyvatel')">
+                        <datalist id="datalist-obyvatel">
+
+
+                        </datalist>
+                    </div>
+
+                    <input type="submit" id="filter" class="btn btn-primary btn-sm" value="Zobraz" />
+                </span>
             </div>
 
             <hr />
@@ -56,3 +77,4 @@
 
 
 <script src='/admin/dist/scheduler.js'></script>
+<script src='/admin/template/js/filter.js'></script>

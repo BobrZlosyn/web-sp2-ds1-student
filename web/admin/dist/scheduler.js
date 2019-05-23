@@ -14490,12 +14490,57 @@ document.addEventListener('DOMContentLoaded', function() {
     sendAjax("all", 5, calendar );
     calendar.render();
 
+    sendAjax("types", 5, calendar);
+    sendAjax("obInService", 5, calendar);
+
 
     $("#test").click(function () {
         for(var event in calendar.getEvents()){
             calendar.getEvents()[0].remove();
         }
         sendAjax("all", 5, calendar );
+    });
+
+    $("#filter").click(function () {
+        for(var event in calendar.getEvents()){
+            calendar.getEvents()[0].remove();
+        }
+
+        if(document.getElementById("chooseService").value.length != 0){
+            var type = document.getElementById("chooseService").value;
+            var datalist = document.getElementById("datalist-service");
+            var options = datalist.getElementsByTagName("option");
+
+            var i;
+            for(i = 0; i < options.length; i++){
+                if(options[i].value == type){
+                    console.log(options[i].id);
+
+                    sendAjax("type", options[i].id, calendar);
+                }
+            }
+        }
+
+        if(document.getElementById("chooseObyvatel").value.length != 0){
+
+            var type = document.getElementById("chooseObyvatel").value;
+            var datalist = document.getElementById("datalist-obyvatel");
+            var options = datalist.getElementsByTagName("option");
+
+            var i;
+            for(i = 0; i < options.length; i++){
+                if(options[i].value == type){
+                    console.log(options[i].id);
+
+                    sendAjax("obyvatel", options[i].id, calendar);
+                }
+            }
+        }
+
+        if(document.getElementById("chooseObyvatel").value.length == 0 && document.getElementById("chooseService").value.length == 0){
+            sendAjax("all", 5, calendar);
+        }
+
     });
 
 });
@@ -14540,24 +14585,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     //console.log(data);
                    // calendar.events = new Array();
                     if (response.msg === "ok") {
-                        //console.log(response.results);
 
-                        for(var i in response.results){
-                            var newEvent = {
-                                id: response.results[i].id,
-                                title: response.results[i].nazev,
-                                start: response.results[i].datum_od + 'T' + response.results[i].cas_od,
-                                end: response.results[i].datum_do + 'T' + response.results[i].cas_do,
-                                description: response.results[i].popis
-                            };
-
-                            calendar.addEvent(newEvent);
-                            //calendar.events.push(newEvent);
-                        }
-
-                        //calendar.render();
                         // melo by stacit jen tady meneni kalendare ale pro jistotu pridam volani funkce
-                        doResponseAction(select);
+                        doResponseAction(select, response.results, calendar);
                     }
                 },
             error: function( jqXhr, textStatus, errorThrown ){
@@ -14566,13 +14596,43 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        function doResponseAction(select) {
-            if (select == "all") {
-                //do something
+        function doResponseAction(select, results, calendar) {
+            if (select == "all" || select == "type" || select == "obyvatel") {
+                for (var i in results) {
+                    var newEvent = {
+                        id: results[i].id,
+                        title: results[i].nazev,
+                        start: results[i].datum_od + 'T' + results[i].cas_od,
+                        end: results[i].datum_do + 'T' + results[i].cas_do,
+                        description: results[i].popis
+                    };
+
+                    calendar.addEvent(newEvent);
+                }
+            }
+
+            if (select == "types") {
+                var dropdown = document.getElementById("datalist-service");
+
+                for (var i in results) {
+                    dropdown.innerHTML += "<option id=" + results[i].id + ">" + results[i].nazev + "</option>";
+                }
+            }
+
+            if (select == "obInService") {
+                var dropdown = document.getElementById("datalist-obyvatel");
+
+                for (var i in results) {
+                    dropdown.innerHTML += "<option id=" + results[i].id + ">" + results[i].jmeno + " " + results[i].prijmeni + "</option>";
+                }
             }
         }
 
 /***/ })
 
+
+
 /******/ });
+
+
 //# sourceMappingURL=scheduler.js.map
