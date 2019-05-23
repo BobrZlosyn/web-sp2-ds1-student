@@ -45,36 +45,20 @@ class scheduler_api_controller extends ds1_base_controller
         $id = @$post_data["id"];
         //echo "field: $field, search: $search_string <br/>";
 
-
-        if ($select == "days") {
-            return $this->selectServicesDays($scheduler);
+        switch($select) {
+            case "days":    return $this->selectServicesDays($scheduler);
+            case "detail":  return $this->selectDetailServices($scheduler, $id);
+            case "time": return $this->selectServicesTime($scheduler);
+            case "all": return $this->selectServicesAll($scheduler);
+            case "obyvatel": return $this->selectServicesObyvatele($scheduler, $id);
+            case "type": return $this->selectServicesType($scheduler, $id);
+            case "history": return $this->selectServicesHistory($scheduler);
+            case "types": return $this->selectTypes($scheduler);
+            case "obInService": return $this->selectObyvatelInServices($scheduler);
+            case "users": return $this->selectServicesUsers($scheduler);
+            default : new JsonResponse("We have nothing to offer you.");
         }
 
-        if ($select == "detail") {
-            return $this->selectDetailServices($scheduler, $id);
-        }
-
-        if ($select == "time") {
-            return $this->selectServicesTime($scheduler);
-        }
-
-        if ($select == "all") {
-            return $this->selectServicesAll($scheduler);
-        }
-
-        if ($select == "obyvatel") {
-            return $this->selectServicesObyvatele($scheduler, $id);
-        }
-
-        if ($select == "type") {
-            return $this->selectServicesType($scheduler, $id);
-        }
-
-        if ($select == "history") {
-            return $this->selectServicesHistory($scheduler);
-        }
-
-        return new JsonResponse("We have nothing to offer you.");
     }
 
     /**
@@ -153,6 +137,36 @@ class scheduler_api_controller extends ds1_base_controller
     }
 
     /**
+     * nacita typy vykonu
+     * @var $scheduler Scheduler
+     * @return JsonResponse
+     */
+    private function selectTypes($scheduler ){
+        $result = $scheduler->adminLoadServiceTypes();
+        return $this->transformToJSON($result);
+    }
+
+    /**
+     * nacita jednotlive obyvatele kteri maji naplanovanou sluzbu
+     * @var $scheduler Scheduler
+     * @return JsonResponse
+     */
+    private function selectObyvatelInServices($scheduler ){
+        $result = $scheduler->adminLoadObyvatelInService();
+        return $this->transformToJSON($result);
+    }
+
+    /**
+     * nacita jednotlive uzivatele s naplanovanou sluzbou
+     * @var $scheduler Scheduler
+     * @return JsonResponse
+     */
+    private function selectServicesUsers($scheduler ){
+        $result = $scheduler->adminLoadServiceUsers();
+        return $this->transformToJSON($result);
+    }
+
+    /**
      * transformuje vysledky z DB do JSONu
      * @param $result
      * @return JsonResponse
@@ -167,7 +181,7 @@ class scheduler_api_controller extends ds1_base_controller
             }
 
         }else {
-            $data_for_response["msg"] = "fail";
+            $data_for_response["msg"] = "fail - couldnt get data";
         }
         return new JsonResponse($data_for_response);
     }

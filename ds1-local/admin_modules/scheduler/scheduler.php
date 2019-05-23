@@ -22,6 +22,9 @@ class scheduler extends \ds1\core\ds1_base_model
      *      detail
      *      type
      *      obyvatel
+     *      types
+     *      obInService
+     *      users
      */
 
 
@@ -232,6 +235,87 @@ class scheduler extends \ds1\core\ds1_base_model
 
 
         return $this->executeQuery($query);
+
+    }
+
+
+
+    /**
+     * Admin - nacist vsechny typy sluzeb
+     *
+     * @param string $type - typ zatim jen pro prehlednost
+     * @return mixed
+     */
+    public function adminLoadServiceTypes($type = "types")
+    {
+        $columns = "*";
+        if ($type == "all") {
+            $columns = "*";
+        }
+
+        $table_name =
+            TABLE_TYP_VYKONU . " tv " ;
+
+        $where_array  = "";
+
+        // 1) pripravit dotaz s dotaznikama
+        $query = "select " . $columns . " from ".$table_name;
+        // echo $query;
+
+        return $this->executeQuery($query);
+
+    }
+
+    /**
+     * Admin - nacist vsechny obyvatele s naplanovanou sluzbou
+     *
+     * @param string $type - typ zatim jen pro prehlednost
+     * @return mixed
+     */
+    public function adminLoadObyvatelInService($type = "obInService")
+    {
+        $columns = "o.*";
+
+
+        $table_name =   TABLE_SLUZBA . " s, " .
+                        TABLE_OBYVATELE . " o ";
+
+        $where_array  =
+            "s.obyvatel_id = o.id ";
+
+        // 1) pripravit dotaz s dotaznikama
+        $query = "select DISTINCT " . $columns . " from ".$table_name. " where " . $where_array;
+        // echo $query;
+
+        return $this->executeQuery($query);
+
+
+    }
+
+
+    /**
+     * Admin - nacist vsechny uzivatele s naplanovanou sluzbou.
+     *
+     * @param string $type - typ zatim jen pro prehlednost
+     * @return mixed
+     */
+    public function adminLoadServiceUsers($type = "users")
+    {
+        $columns = "u.*";
+
+
+        $table_name =   TABLE_UZIVATELE . " u, " .
+            TABLE_ZAZNAM_VYKONU . " zv ";
+
+        $where_array  =
+            "zv.uzivatel_id = u.id ";
+
+        // 1) pripravit dotaz s dotaznikama
+        $query = "select DISTINCT " . $columns . " from ".$table_name. " where " . $where_array;
+        // echo $query;
+
+        return $this->executeQuery($query);
+
 
     }
 
