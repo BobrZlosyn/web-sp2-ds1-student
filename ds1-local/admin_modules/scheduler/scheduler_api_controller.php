@@ -57,6 +57,7 @@ class scheduler_api_controller extends ds1_base_controller
             case "types": return $this->selectTypes($scheduler);
             case "obInService": return $this->selectObyvatelInServices($scheduler);
             case "users": return $this->selectServicesUsers($scheduler);
+            case "service": return $this->selectSpecificService($scheduler, $id);
         }
 
         return new JsonResponse("We have nothing to offer you.");
@@ -164,6 +165,17 @@ class scheduler_api_controller extends ds1_base_controller
      */
     private function selectServicesUsers($scheduler ){
         $result = $scheduler->adminLoadServiceUsers();
+        return $this->transformToJSON($result);
+    }
+
+    /**
+     * nacita sluzbu podle jejiho ID
+     * @var $scheduler Scheduler
+     * @var int $id - ID sluzby
+     * @return JsonResponse
+     */
+    private function selectSpecificService($scheduler, $id ){
+        $result = $scheduler->adminLoadServiceSpecific($id);
         return $this->transformToJSON($result);
     }
 

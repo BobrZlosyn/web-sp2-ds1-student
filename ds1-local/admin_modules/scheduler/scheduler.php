@@ -25,6 +25,7 @@ class scheduler extends \ds1\core\ds1_base_model
      *      types - vraci vsechny typy vykonu
      *      obInService - vraci obcany kteri maji sluzbu
      *      users - vraci uzivatele kteri maji sluzbu
+     *      service - vraci sluzbu podle ID
      */
 
 
@@ -111,6 +112,35 @@ class scheduler extends \ds1\core\ds1_base_model
 
     }
 
+    /**
+     * Admin - nacist sluzbu podle ID
+     *
+     * @param string $type - typ zatim jen pro prehlednost
+     * @param int $id - id sluzby kterou chceme vybrat
+     * @return mixed
+     */
+    public function adminLoadServiceSpecific($id , $type = "service")
+    {
+        $columns = "*";
+
+        $table_name =   TABLE_SLUZBA . " s, " .
+            TABLE_TYP_VYKONU . " tv, " .
+            TABLE_PLAN_VYKONU . " pv, " .
+            TABLE_OBYVATELE . " o " ;
+
+        $where_array  = "s.typ_vykonu_id = tv.id AND " .
+            "s.id = pv.sluzba_id AND " .
+            "s.id = ? " .
+            "s.obyvatel_id = o.id ";
+
+        // 1) pripravit dotaz s dotaznikama
+        $query = "select " . $columns . " from ".$table_name. " where " . $where_array;
+        // echo $query;
+
+        return $this->executeQuery($query, $id);
+
+
+    }
 
     /**
      * Admin - nacist vsechny sluzby s casem i datem jen historicke (ukazou se jen se zaznamem jiz.
