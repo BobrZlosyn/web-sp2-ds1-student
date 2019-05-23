@@ -361,17 +361,19 @@ class scheduler extends \ds1\core\ds1_base_model
      */
     private function executeQuery($query, $param = null) {
         // 2) pripravit si statement
-
-
-
-
-        $statement = $this->connection->prepare($query);
-
-        $bindValue = 1;
-        if ($param != null) {
-            $statement->bindValue($bindValue++, $param);
+        if (!empty($this->limit)) {
+            $query = $query . " LIMIT ? ";
         }
 
+        $statement = $this->connection->prepare($query);
+        $bindValue = 1;
+        if ($param != null) {
+            $statement->bindValue($bindValue++, $param, PDO::PARAM_INT);
+        }
+
+        if (!empty($this->limit)) {
+            $statement->bindValue($bindValue, $this->limit, PDO::PARAM_INT);
+        }
 
         // 4) provest dotaz
         $statement->execute();
