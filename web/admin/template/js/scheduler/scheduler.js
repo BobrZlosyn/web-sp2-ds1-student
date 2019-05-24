@@ -160,6 +160,8 @@ function doResponseAction(select, results, calendar) {
 
             calendar.addEvent(newEvent);
         }
+
+        calendar.render();
     }
 
     if (select == "types") {

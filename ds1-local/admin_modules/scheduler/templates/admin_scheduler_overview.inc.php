@@ -83,5 +83,5 @@
 
 
 
-<script src='/admin/template/js/dist/scheduler.js'></script>
+<script src='/admin/template/js/scheduler/dist/scheduler.js'></script>
 <script src='/admin/template/js/filter.js'></script>
