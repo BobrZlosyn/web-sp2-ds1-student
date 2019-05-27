@@ -118,7 +118,7 @@ function getDate() {
  * @param userInputString - upresnujici informace {napr id}
  */
 function sendAjax (select, userInputString, calendar) {
-    let timeoutPromise = 1000000;
+    let timeoutPromise = 10000;
 
     $.ajax({
         url: "/admin/index.php/plugin/scheduler-api" ,
@@ -147,6 +147,12 @@ function sendAjax (select, userInputString, calendar) {
     });
 }
 
+/**
+ * vykonani akce
+ * @param select dotaz
+ * @param results vysledek
+ * @param calendar objekt kalendare
+ */
 function doResponseAction(select, results, calendar) {
     if (select == "all" || select == "type" || select == "obyvatel") {
         for (var i in results) {

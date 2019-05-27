@@ -1421,6 +1421,14 @@ be a descendant of the grid when it is being dragged.
     border-top-color: transparent;
     border-bottom-color: transparent; }
 
+#filter{
+    position: relative;
+    height: 28px;
+    top: 20px;
+    padding: 0;
+    width: 100px;
+}
+
 
 /* ******************************************************************************************************* */
 /* **************   KONEC SCHEDULER       ******************************************************************* */
