@@ -192,5 +192,7 @@ function doResponseAction(select, results, calendar) {
         document.getElementById("event-obyvatel").innerHTML = results[0].jmeno + " " + results[0].prijmeni;
 
         document.getElementById("description").innerHTML = results[0].popis;
+
+        document.getElementById("service-id").innerHTML += results[0].id;
     }
 }

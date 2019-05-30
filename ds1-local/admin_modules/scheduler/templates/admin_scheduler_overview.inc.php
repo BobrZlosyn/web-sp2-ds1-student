@@ -73,6 +73,7 @@
                 <p>Popis: <span id="description"></span></p>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="service-id">ID služby: </button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Zavřít</button>
             </div>
         </div>
